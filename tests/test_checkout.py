@@ -1,3 +1,5 @@
+
+
 import pytest
 from pages.inventory_page import InventoryPage
 from pages.cart_page import CartPage
@@ -27,21 +29,24 @@ class TestCheckout:
 
     @pytest.fixture(autouse=True)
     def setup_carrito(self, driver_sesion):
-       
+   
         self.driver = driver_sesion
 
-        # Agregar el producto de prueba desde el inventario
         inventario = InventoryPage(driver_sesion)
         inventario.add_product_to_cart(PRODUCT_NAME)
 
-        # Navegar al carrito
         inventario.go_to_cart()
         esperar_url_contiene(driver_sesion, "cart")
 
-    # ── Validación del carrito ───────────────────────────────────────────────
 
     def test_carrito_muestra_titulo_correcto(self):
-     
+        """
+        TC-020 | VALIDACIÓN
+        Verificar que la página del carrito tiene el título 'Your Cart'.
+
+        Resultado esperado:
+          - El título de la página es 'Your Cart'.
+        """
         carrito = CartPage(self.driver)
         titulo = carrito.get_page_title()
 
@@ -51,8 +56,7 @@ class TestCheckout:
         )
 
     def test_carrito_contiene_exactamente_un_item(self):
-        
-     
+      
         carrito = CartPage(self.driver)
         cantidad = carrito.get_item_count()
 
@@ -62,7 +66,7 @@ class TestCheckout:
         )
 
     def test_carrito_contiene_el_producto_correcto(self):
-      
+  
         carrito = CartPage(self.driver)
         nombres_en_carrito = carrito.get_item_names()
 
@@ -71,10 +75,9 @@ class TestCheckout:
             f"Items actuales: {nombres_en_carrito}"
         )
 
-    # ── Validación del formulario de checkout ────────────────────────────────
 
     def test_click_checkout_navega_al_formulario(self):
-   
+      
         carrito = CartPage(self.driver)
         carrito.click_checkout()
 
@@ -103,7 +106,7 @@ class TestCheckout:
         )
 
     def test_formulario_error_sin_last_name(self):
-        
+   
         carrito = CartPage(self.driver)
         carrito.click_checkout()
 
@@ -118,7 +121,7 @@ class TestCheckout:
         )
 
     def test_formulario_error_sin_postal_code(self):
-      
+     
         carrito = CartPage(self.driver)
         carrito.click_checkout()
 
@@ -133,10 +136,9 @@ class TestCheckout:
             f"[TC-026] Mensaje de error inesperado: '{error}'"
         )
 
-    # ── Validación del resumen de pedido ─────────────────────────────────────
 
     def test_resumen_muestra_total_mayor_a_cero(self):
-    
+       
         carrito = CartPage(self.driver)
         carrito.click_checkout()
 
@@ -151,7 +153,6 @@ class TestCheckout:
         resumen = CheckoutOverviewPage(self.driver)
         total_texto = resumen.get_total()
 
-        # Extraer el valor numérico usando el helper auxiliar
         total_valor = extraer_precio(total_texto)
 
         assert total_valor > 0, (
@@ -159,22 +160,18 @@ class TestCheckout:
             f"pero se obtuvo: '{total_texto}' → {total_valor}"
         )
 
-   
 
     def test_flujo_completo_de_compra_end_to_end(self):
-   
-        # ── PASO 1: Verificar estado inicial del carrito ──
+       
         carrito = CartPage(self.driver)
         assert carrito.get_page_title() == CART_TITLE, \
             "[TC-028 | Paso 1] No se está en la página del carrito."
         assert carrito.get_item_count() == 1, \
             "[TC-028 | Paso 1] El carrito no tiene exactamente 1 ítem."
 
-        # ── PASO 2: Iniciar checkout ──
         carrito.click_checkout()
         esperar_url_contiene(self.driver, "checkout-step-one")
 
-        # ── PASO 3: Completar formulario ──
         checkout_info = CheckoutInfoPage(self.driver)
         assert checkout_info.get_page_title() == CHECKOUT_INFO_TITLE, \
             "[TC-028 | Paso 3] No se está en el formulario de checkout."
@@ -187,7 +184,6 @@ class TestCheckout:
         checkout_info.click_continue()
         esperar_url_contiene(self.driver, "checkout-step-two")
 
-        # ── PASO 4: Verificar resumen ──
         resumen = CheckoutOverviewPage(self.driver)
         assert resumen.get_page_title() == CHECKOUT_OVERVIEW_TITLE, \
             "[TC-028 | Paso 4] No se está en la página de resumen."
@@ -197,11 +193,9 @@ class TestCheckout:
         assert total_valor > 0, \
             f"[TC-028 | Paso 4] Total inválido: '{total_texto}'"
 
-        # ── PASO 5: Confirmar la compra ──
         resumen.click_finish()
         esperar_url_contiene(self.driver, "checkout-complete")
 
-        # ── PASO 6: Verificar confirmación ──
         confirmacion = CheckoutCompletePage(self.driver)
 
         assert confirmacion.get_page_title() == CHECKOUT_COMPLETE_TITLE, (

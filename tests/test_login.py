@@ -27,18 +27,20 @@ TITULO_CONTENIDO = "Products"                    # H1 visible en la página
 TIMEOUT_ESPERA   = 10                            # segundos para WebDriverWait
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-class TestLoginExitoso:
 
+class TestLoginExitoso:
+  
 
     def test_login_exitoso_valida_url_inventario(self, driver):
-   
+     
+        
         login_page = LoginPage(driver)
         login_page.open()
 
-        # Ingresar credenciales válidas y hacer login 
+        
         login_page.login(VALID_USER, VALID_PASSWORD)
 
+        
         WebDriverWait(driver, TIMEOUT_ESPERA).until(
             EC.url_contains("inventory.html"),
             message=(
@@ -56,13 +58,13 @@ class TestLoginExitoso:
         )
 
     def test_login_exitoso_valida_titulo_contenido_products(self, driver):
+     
         
-        # Login 
         login_page = LoginPage(driver)
         login_page.open()
         login_page.login(VALID_USER, VALID_PASSWORD)
 
-       
+        
         elemento_titulo = WebDriverWait(driver, TIMEOUT_ESPERA).until(
             EC.visibility_of_element_located((By.CLASS_NAME, "title")),
             message=(
@@ -71,7 +73,7 @@ class TestLoginExitoso:
             )
         )
 
-        # Verificar texto 
+        
         titulo_obtenido = elemento_titulo.text
         assert titulo_obtenido == TITULO_CONTENIDO, (
             f"[TC-002] Título del contenido incorrecto.\n"
@@ -81,7 +83,7 @@ class TestLoginExitoso:
 
     def test_login_exitoso_valida_titulo_pestaña_swag_labs(self, driver):
        
-        # Login 
+        
         login_page = LoginPage(driver)
         login_page.open()
         login_page.login(VALID_USER, VALID_PASSWORD)
@@ -96,7 +98,7 @@ class TestLoginExitoso:
             )
         )
 
-        # Verificar título
+       
         titulo_pestaña_actual = driver.title
         assert titulo_pestaña_actual == TITULO_PESTAÑA, (
             f"[TC-003] Título de pestaña incorrecto.\n"
@@ -105,21 +107,20 @@ class TestLoginExitoso:
         )
 
     def test_login_exitoso_triple_validacion_completa(self, driver):
-        
-        
+      
         login_page = LoginPage(driver)
         login_page.open()
 
-        # Verificar URL 
+       
         assert BASE_URL in driver.current_url, (
             f"[TC-004] No se navegó a la página de login. "
             f"URL actual: '{driver.current_url}'"
         )
 
-        # Ingresar credenciales 
-        login_page.enter_username(VALID_USER)    
-        login_page.enter_password(VALID_PASSWORD)  
-        login_page.click_login()                   
+       
+        login_page.enter_username(VALID_USER)    # Escribe "standard_user"
+        login_page.enter_password(VALID_PASSWORD)  # Escribe "secret_sauce"
+        login_page.click_login()                   # Click en botón Login
 
         
         WebDriverWait(driver, TIMEOUT_ESPERA).until(
@@ -127,14 +128,13 @@ class TestLoginExitoso:
             message="[TC-004] La URL no redirigió a /inventory.html"
         )
 
-       
         elemento_titulo = WebDriverWait(driver, TIMEOUT_ESPERA).until(
             EC.visibility_of_element_located((By.CLASS_NAME, "title")),
             message="[TC-004] El título 'Products' no fue visible en el DOM"
         )
 
-        
-        
+
+       
         url_actual = driver.current_url
         assert "inventory.html" in url_actual, (
             f"[TC-004 | URL] Redirección incorrecta.\n"
@@ -159,9 +159,9 @@ class TestLoginExitoso:
         )
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+
 class TestLoginFallido:
-   
+
 
     def test_login_sin_credenciales_muestra_error_username(self, driver):
     
@@ -185,7 +185,7 @@ class TestLoginFallido:
         )
 
     def test_login_sin_password_muestra_error_password(self, driver):
-      
+        
         login_page = LoginPage(driver)
         login_page.open()
         login_page.enter_username(VALID_USER)
@@ -204,7 +204,7 @@ class TestLoginFallido:
         )
 
     def test_login_credenciales_invalidas_muestra_error_credenciales(self, driver):
-        
+      
         login_page = LoginPage(driver)
         login_page.open()
         login_page.login(VALID_USER, INVALID_PASSWORD)
@@ -240,7 +240,7 @@ class TestLoginFallido:
         )
 
     def test_login_fallido_no_redirige_al_inventario(self, driver):
-      
+       
         login_page = LoginPage(driver)
         login_page.open()
         login_page.login(VALID_USER, INVALID_PASSWORD)
@@ -260,7 +260,7 @@ class TestLoginFallido:
         "usuario_bloqueado",
     ])
     def test_login_negativo_parametrizado(self, driver, caso):
-       
+     
         datos = generar_datos_usuario_invalido(caso)
 
         login_page = LoginPage(driver)
@@ -273,7 +273,7 @@ class TestLoginFallido:
 
         login_page.click_login()
 
-        # Espera explícita antes de leer el error
+        
         WebDriverWait(driver, TIMEOUT_ESPERA).until(
             EC.visibility_of_element_located(
                 (By.CSS_SELECTOR, "[data-test='error']")

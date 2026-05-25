@@ -1,4 +1,4 @@
- **Pre-Entrega de Proyecto · Curso de Testing Automatizado**  
+> **Pre-Entrega de Proyecto · Curso de Testing Automatizado**  
 > Automatización de pruebas funcionales sobre [saucedemo.com](https://www.saucedemo.com)  
 > Tecnologías: Python · Pytest · Selenium WebDriver · Git & GitHub
 
@@ -21,7 +21,7 @@
 
 ## Descripción del proyecto
 
-Este proyecto implementa una suite de **casos de prueba automatizados** sobre la aplicación web demo [saucedemo.com](https://www.saucedemo.com), cubriendo los flujos principales de la aplicación:
+Este proyecto implementa una suite de **28 casos de prueba automatizados** sobre la aplicación web demo [saucedemo.com](https://www.saucedemo.com), cubriendo los flujos principales de la aplicación:
 
 - **Autenticación:** login válido, usuarios bloqueados, campos vacíos, credenciales incorrectas.
 - **Inventario:** visualización de productos, agregar/quitar del carrito, navegación.

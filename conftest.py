@@ -1,4 +1,5 @@
 
+
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -10,10 +11,13 @@ from utils.constants import BASE_URL, VALID_USER, VALID_PASSWORD
 from utils.helpers import tomar_captura_en_falla, obtener_timestamp_legible
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Fixture base: WebDriver limpio
+# ─────────────────────────────────────────────────────────────────────────────
 
 @pytest.fixture(scope="function")
 def driver():
-  
+ 
     # Configurar opciones del navegador Chrome
     chrome_options = Options()
 
@@ -42,6 +46,9 @@ def driver():
     navegador.quit()
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Fixture con sesión iniciada
+# ─────────────────────────────────────────────────────────────────────────────
 
 @pytest.fixture(scope="function")
 def driver_sesion(driver):
@@ -55,13 +62,11 @@ def driver_sesion(driver):
     return driver  # Retorna el mismo driver ya autenticado
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Hook: captura automática en tests fallidos
-# ─────────────────────────────────────────────────────────────────────────────
+
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
- 
+  
     outcome = yield
     reporte = outcome.get_result()
 

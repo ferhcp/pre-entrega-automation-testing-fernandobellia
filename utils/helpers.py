@@ -9,11 +9,11 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 
 
-# ESPERAS
+# SHelpers de espera
 
 
 def esperar_url_contiene(driver, texto_url, timeout=10):
-   
+  
     try:
         WebDriverWait(driver, timeout).until(EC.url_contains(texto_url))
         return True
@@ -26,7 +26,7 @@ def esperar_url_contiene(driver, texto_url, timeout=10):
 
 
 def esperar_elemento_desaparece(driver, by, locator, timeout=10):
-    
+
     try:
         WebDriverWait(driver, timeout).until(
             EC.invisibility_of_element_located((by, locator))
@@ -37,13 +37,13 @@ def esperar_elemento_desaparece(driver, by, locator, timeout=10):
 
 
 
-# PRINTS
-─
+# captura de pantalla
+
 
 def tomar_captura(driver, nombre_test, directorio="reports/screenshots"):
     
     try:
-        # Crear directorio si no existe
+        
         os.makedirs(directorio, exist_ok=True)
 
         
@@ -66,7 +66,7 @@ def tomar_captura_en_falla(driver, nombre_test):
 
 
 
-# VALIDACIONES
+# validación 
 
 
 def verificar_titulo_pagina(driver, titulo_esperado):
@@ -76,7 +76,7 @@ def verificar_titulo_pagina(driver, titulo_esperado):
 
 
 def elemento_existe_en_pagina(driver, by, locator):
-
+    
     try:
         driver.find_element(by, locator)
         return True
@@ -91,7 +91,7 @@ def contar_elementos(driver, by, locator):
 
 
 
-# DATOS
+# datos 
 
 
 def extraer_precio(texto_precio):
@@ -112,12 +112,12 @@ def formatear_nombre_producto_a_id(nombre_producto):
 
 
 def obtener_timestamp_legible():
- 
+    
     return datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
 
 def generar_datos_usuario_invalido(caso):
-
+   
     catalogo = {
         "sin_usuario": {
             "username": "",
@@ -150,14 +150,20 @@ def generar_datos_usuario_invalido(caso):
     return catalogo[caso]
 
 
-def hacer_scroll_al_fondo(driver):
 
+def hacer_scroll_al_fondo(driver):
+   
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    time.sleep(0.5)  # Pausa breve para que el scroll se complete
+    time.sleep(0.5)  
 
 
 def hacer_scroll_al_inicio(driver):
-    
+    """
+    Hace scroll hasta el inicio de la página usando JavaScript.
+
+    Args:
+        driver: Instancia del WebDriver de Selenium.
+    """
     driver.execute_script("window.scrollTo(0, 0);")
     time.sleep(0.3)
 
