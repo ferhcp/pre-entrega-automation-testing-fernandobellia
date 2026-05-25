@@ -1,5 +1,3 @@
-
-
 import pytest
 from selenium.webdriver.common.by import By
 
@@ -20,11 +18,7 @@ from utils.helpers import (
 
 
 class TestInventory:
-   
-
-    
     def test_pagina_inventario_muestra_titulo_correcto(self, driver_sesion):
-       
         inventario = InventoryPage(driver_sesion)
         titulo_obtenido = inventario.get_page_title()
 
@@ -34,8 +28,6 @@ class TestInventory:
         )
 
     def test_inventario_muestra_exactamente_seis_productos(self, driver_sesion):
-       
-        
         cantidad = contar_elementos(
             driver_sesion, By.CLASS_NAME, "inventory_item"
         )
@@ -46,7 +38,6 @@ class TestInventory:
         )
 
     def test_todos_los_productos_tienen_nombre_visible(self, driver_sesion):
-       
         nombres = obtener_texto_todos_elementos(
             driver_sesion, By.CLASS_NAME, "inventory_item_name"
         )
@@ -61,7 +52,6 @@ class TestInventory:
             )
 
     def test_todos_los_productos_tienen_precio_valido(self, driver_sesion):
-       
         precios_texto = obtener_texto_todos_elementos(
             driver_sesion, By.CLASS_NAME, "inventory_item_price"
         )
@@ -76,10 +66,7 @@ class TestInventory:
                 f"[TC-013] Precio inválido encontrado: '{texto}' → {precio}"
             )
 
-    
-
     def test_agregar_producto_actualiza_badge_carrito(self, driver_sesion):
-        
         inventario = InventoryPage(driver_sesion)
         inventario.add_product_to_cart(PRODUCT_NAME)
 
@@ -91,7 +78,6 @@ class TestInventory:
         )
 
     def test_agregar_multiples_productos_actualiza_badge(self, driver_sesion):
-        
         inventario = InventoryPage(driver_sesion)
         inventario.add_product_to_cart("Sauce Labs Backpack")
         inventario.add_product_to_cart("Sauce Labs Bike Light")
@@ -104,11 +90,9 @@ class TestInventory:
         )
 
     def test_quitar_producto_elimina_badge_carrito(self, driver_sesion):
-        
         inventario = InventoryPage(driver_sesion)
         inventario.add_product_to_cart(PRODUCT_NAME)
 
-        
         assert inventario.get_cart_count() == 1, (
             "[TC-016] El producto no se agregó correctamente al carrito."
         )
@@ -120,10 +104,7 @@ class TestInventory:
             f"pero muestra: {inventario.get_cart_count()}"
         )
 
-    
-
     def test_click_en_icono_carrito_navega_a_cart(self, driver_sesion):
-       
         inventario = InventoryPage(driver_sesion)
         inventario.go_to_cart()
 
@@ -138,7 +119,6 @@ class TestInventory:
         )
 
     def test_logout_desde_menu_redirige_a_login(self, driver_sesion):
-        
         inventario = InventoryPage(driver_sesion)
         inventario.logout()
 
@@ -150,15 +130,12 @@ class TestInventory:
             f"Esperada: '{url_esperada}' | Actual: '{url_actual}'"
         )
 
-    
-
     @pytest.mark.parametrize("nombre_producto", [
         "Sauce Labs Backpack",
         "Sauce Labs Bike Light",
         "Sauce Labs Bolt T-Shirt",
     ])
     def test_agregar_cada_producto_al_carrito(self, driver_sesion, nombre_producto):
-       
         inventario = InventoryPage(driver_sesion)
         inventario.add_product_to_cart(nombre_producto)
 
@@ -170,15 +147,8 @@ class TestInventory:
         )
 
 
-
-
 class TestNavegacionCatalogo:
-   
-
-    
     def test_titulo_pagina_inventario_es_correcto(self, driver_sesion):
-       
-        
         inventario = InventoryPage(driver_sesion)
         titulo = inventario.get_page_title()
 
@@ -188,10 +158,9 @@ class TestNavegacionCatalogo:
             f"  Obtenido: '{titulo}'"
         )
 
-    
+   
 
     def test_catalogo_tiene_al_menos_un_producto_visible(self, driver_sesion):
-        
         cantidad = contar_elementos(
             driver_sesion, By.CLASS_NAME, "inventory_item"
         )
@@ -201,44 +170,37 @@ class TestNavegacionCatalogo:
             f"  Cantidad detectada: {cantidad}"
         )
 
-    
+   
 
     def test_primer_producto_tiene_nombre_y_precio_visibles(self, driver_sesion):
-        
-       
         inventario = InventoryPage(driver_sesion)
 
         nombre_primero = inventario.get_first_product_name()
         precio_primero = inventario.get_first_product_price()
 
-        
         print(f"\n[Segundo commit | TC-022] Primer producto del catálogo:")
         print(f"  Nombre : {nombre_primero}")
         print(f"  Precio : {precio_primero}")
 
-        
+        # Validar nombre 
         assert nombre_primero.strip() != "", (
             "[TC-022 | Segundo commit] El nombre del primer producto está vacío."
         )
 
-        
+        # Validar formato de precio
         assert precio_primero.startswith("$"), (
             f"[TC-022 | Segundo commit] El precio no tiene formato '$XX.XX'.\n"
             f"  Obtenido: '{precio_primero}'"
         )
 
-        
+        # Validar que el precio es numérico y positivo
         valor_numerico = extraer_precio(precio_primero)
         assert valor_numerico > 0, (
             f"[TC-022 | Segundo commit] El precio debe ser > 0.\n"
             f"  Texto: '{precio_primero}' → Valor: {valor_numerico}"
         )
 
-    
-
     def test_menu_hamburguesa_esta_presente_en_la_interfaz(self, driver_sesion):
-       
-        # Segundo commit — verificar presencia del menú
         inventario = InventoryPage(driver_sesion)
 
         assert inventario.is_burger_menu_visible(), (
@@ -247,10 +209,7 @@ class TestNavegacionCatalogo:
         )
 
     
-
     def test_filtro_ordenamiento_esta_presente_en_la_interfaz(self, driver_sesion):
-        
-        
         inventario = InventoryPage(driver_sesion)
 
         assert inventario.is_sort_dropdown_visible(), (
@@ -259,10 +218,7 @@ class TestNavegacionCatalogo:
         )
 
     
-
     def test_icono_carrito_esta_presente_en_la_interfaz(self, driver_sesion):
-        
-        
         inventario = InventoryPage(driver_sesion)
 
         assert inventario.is_cart_icon_visible(), (

@@ -20,27 +20,22 @@ from utils.constants import (
 from utils.helpers import generar_datos_usuario_invalido
 
 
-
-URL_INVENTARIO   = f"{BASE_URL}/inventory.html"  # URL exacta post-login
-TITULO_PESTAÑA   = "Swag Labs"                   # <title> del documento HTML
-TITULO_CONTENIDO = "Products"                    # H1 visible en la página
-TIMEOUT_ESPERA   = 10                            # segundos para WebDriverWait
-
+URL_INVENTARIO   = f"{BASE_URL}/inventory.html"  
+TITULO_PESTAÑA   = "Swag Labs"                  
+TITULO_CONTENIDO = "Products"                   
+TIMEOUT_ESPERA   = 10                           
 
 
+# ─────────────────────────────────────────────────────────────────────────────
 class TestLoginExitoso:
-  
-
     def test_login_exitoso_valida_url_inventario(self, driver):
-     
-        
+        # página de login 
         login_page = LoginPage(driver)
         login_page.open()
 
-        
+        # Ingresar credenciales válidas y hacer login 
         login_page.login(VALID_USER, VALID_PASSWORD)
 
-        
         WebDriverWait(driver, TIMEOUT_ESPERA).until(
             EC.url_contains("inventory.html"),
             message=(
@@ -49,7 +44,7 @@ class TestLoginExitoso:
             )
         )
 
-        # ── PASO 6: Verificar URL exacta ──────────────────────────────────
+        # Verificar URL 
         url_actual = driver.current_url
         assert "inventory.html" in url_actual, (
             f"[TC-001] URL incorrecta tras el login.\n"
@@ -58,13 +53,10 @@ class TestLoginExitoso:
         )
 
     def test_login_exitoso_valida_titulo_contenido_products(self, driver):
-     
-        
-        login_page = LoginPage(driver)
+        # Login 
         login_page.open()
         login_page.login(VALID_USER, VALID_PASSWORD)
 
-        
         elemento_titulo = WebDriverWait(driver, TIMEOUT_ESPERA).until(
             EC.visibility_of_element_located((By.CLASS_NAME, "title")),
             message=(
@@ -73,7 +65,7 @@ class TestLoginExitoso:
             )
         )
 
-        
+        # Verificar título 
         titulo_obtenido = elemento_titulo.text
         assert titulo_obtenido == TITULO_CONTENIDO, (
             f"[TC-002] Título del contenido incorrecto.\n"
@@ -82,13 +74,11 @@ class TestLoginExitoso:
         )
 
     def test_login_exitoso_valida_titulo_pestaña_swag_labs(self, driver):
-       
-        
+        # Login 
         login_page = LoginPage(driver)
         login_page.open()
         login_page.login(VALID_USER, VALID_PASSWORD)
 
-        
         WebDriverWait(driver, TIMEOUT_ESPERA).until(
             EC.title_is(TITULO_PESTAÑA),
             message=(
@@ -98,7 +88,7 @@ class TestLoginExitoso:
             )
         )
 
-       
+        # Verificar título 
         titulo_pestaña_actual = driver.title
         assert titulo_pestaña_actual == TITULO_PESTAÑA, (
             f"[TC-003] Título de pestaña incorrecto.\n"
@@ -107,22 +97,21 @@ class TestLoginExitoso:
         )
 
     def test_login_exitoso_triple_validacion_completa(self, driver):
-      
+        
         login_page = LoginPage(driver)
         login_page.open()
 
-       
+        # Verificar  URL de login
         assert BASE_URL in driver.current_url, (
             f"[TC-004] No se navegó a la página de login. "
             f"URL actual: '{driver.current_url}'"
         )
 
-       
+        # Ingresar credenciales y hacer login 
         login_page.enter_username(VALID_USER)    # Escribe "standard_user"
         login_page.enter_password(VALID_PASSWORD)  # Escribe "secret_sauce"
         login_page.click_login()                   # Click en botón Login
 
-        
         WebDriverWait(driver, TIMEOUT_ESPERA).until(
             EC.url_contains("inventory.html"),
             message="[TC-004] La URL no redirigió a /inventory.html"
@@ -133,8 +122,8 @@ class TestLoginExitoso:
             message="[TC-004] El título 'Products' no fue visible en el DOM"
         )
 
+        
 
-       
         url_actual = driver.current_url
         assert "inventory.html" in url_actual, (
             f"[TC-004 | URL] Redirección incorrecta.\n"
@@ -142,7 +131,6 @@ class TestLoginExitoso:
             f"  Obtenida: '{url_actual}'"
         )
 
-        
         titulo_contenido = elemento_titulo.text
         assert titulo_contenido == TITULO_CONTENIDO, (
             f"[TC-004 | TÍTULO H1] Texto incorrecto en la página.\n"
@@ -150,7 +138,6 @@ class TestLoginExitoso:
             f"  Obtenido: '{titulo_contenido}'"
         )
 
-        
         titulo_pestaña = driver.title
         assert titulo_pestaña == TITULO_PESTAÑA, (
             f"[TC-004 | TITLE] Título de pestaña incorrecto.\n"
@@ -159,17 +146,14 @@ class TestLoginExitoso:
         )
 
 
-
+# ─────────────────────────────────────────────────────────────────────────────
 class TestLoginFallido:
 
-
     def test_login_sin_credenciales_muestra_error_username(self, driver):
-    
         login_page = LoginPage(driver)
         login_page.open()
         login_page.click_login()
 
-        # ESPERA EXPLÍCITA — aguardar que el mensaje de error aparezca
         WebDriverWait(driver, TIMEOUT_ESPERA).until(
             EC.visibility_of_element_located(
                 (By.CSS_SELECTOR, "[data-test='error']")
@@ -185,7 +169,6 @@ class TestLoginFallido:
         )
 
     def test_login_sin_password_muestra_error_password(self, driver):
-        
         login_page = LoginPage(driver)
         login_page.open()
         login_page.enter_username(VALID_USER)
@@ -204,7 +187,6 @@ class TestLoginFallido:
         )
 
     def test_login_credenciales_invalidas_muestra_error_credenciales(self, driver):
-      
         login_page = LoginPage(driver)
         login_page.open()
         login_page.login(VALID_USER, INVALID_PASSWORD)
@@ -222,7 +204,6 @@ class TestLoginFallido:
         )
 
     def test_login_usuario_bloqueado_muestra_error_locked(self, driver):
-       
         login_page = LoginPage(driver)
         login_page.open()
         login_page.login(LOCKED_USER, VALID_PASSWORD)
@@ -240,7 +221,6 @@ class TestLoginFallido:
         )
 
     def test_login_fallido_no_redirige_al_inventario(self, driver):
-       
         login_page = LoginPage(driver)
         login_page.open()
         login_page.login(VALID_USER, INVALID_PASSWORD)
@@ -251,8 +231,6 @@ class TestLoginFallido:
             f"  URL actual: '{url_actual}'"
         )
 
-    # ── Test parametrizado ────────────────────────────────────────────────────
-
     @pytest.mark.parametrize("caso", [
         "sin_usuario",
         "sin_password",
@@ -260,7 +238,6 @@ class TestLoginFallido:
         "usuario_bloqueado",
     ])
     def test_login_negativo_parametrizado(self, driver, caso):
-     
         datos = generar_datos_usuario_invalido(caso)
 
         login_page = LoginPage(driver)
@@ -273,7 +250,6 @@ class TestLoginFallido:
 
         login_page.click_login()
 
-        
         WebDriverWait(driver, TIMEOUT_ESPERA).until(
             EC.visibility_of_element_located(
                 (By.CSS_SELECTOR, "[data-test='error']")

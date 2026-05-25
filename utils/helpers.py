@@ -1,4 +1,3 @@
-
 import os
 import time
 from datetime import datetime
@@ -8,12 +7,9 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 
-
-# SHelpers de espera
-
+# Espera y sincronización
 
 def esperar_url_contiene(driver, texto_url, timeout=10):
-  
     try:
         WebDriverWait(driver, timeout).until(EC.url_contains(texto_url))
         return True
@@ -26,7 +22,6 @@ def esperar_url_contiene(driver, texto_url, timeout=10):
 
 
 def esperar_elemento_desaparece(driver, by, locator, timeout=10):
-
     try:
         WebDriverWait(driver, timeout).until(
             EC.invisibility_of_element_located((by, locator))
@@ -36,17 +31,14 @@ def esperar_elemento_desaparece(driver, by, locator, timeout=10):
         return False
 
 
-
-# captura de pantalla
-
+# Captura de pantalla
 
 def tomar_captura(driver, nombre_test, directorio="reports/screenshots"):
-    
     try:
-        
+        # Crear directorio si no existe
         os.makedirs(directorio, exist_ok=True)
 
-        
+        # Generar nombre de archivo con timestamp para evitar colisiones
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         nombre_archivo = f"{nombre_test}_{timestamp}.png"
         ruta_completa = os.path.join(directorio, nombre_archivo)
@@ -61,22 +53,18 @@ def tomar_captura(driver, nombre_test, directorio="reports/screenshots"):
 
 
 def tomar_captura_en_falla(driver, nombre_test):
-   
     return tomar_captura(driver, f"FALLA_{nombre_test}")
 
 
 
-# validación 
-
+# validaciónes 
 
 def verificar_titulo_pagina(driver, titulo_esperado):
-   
     titulo_actual = driver.title
     return titulo_actual == titulo_esperado
 
 
 def elemento_existe_en_pagina(driver, by, locator):
-    
     try:
         driver.find_element(by, locator)
         return True
@@ -85,19 +73,12 @@ def elemento_existe_en_pagina(driver, by, locator):
 
 
 def contar_elementos(driver, by, locator):
-    
     elementos = driver.find_elements(by, locator)
     return len(elementos)
 
-
-
-# datos 
-
-
 def extraer_precio(texto_precio):
-   
     import re
-    
+    # Busca uno o más dígitos, punto opcional y más dígitos
     match = re.search(r'\d+\.\d+', texto_precio)
     if not match:
         raise ValueError(
@@ -107,17 +88,14 @@ def extraer_precio(texto_precio):
 
 
 def formatear_nombre_producto_a_id(nombre_producto):
-   
     return nombre_producto.lower().replace(" ", "-")
 
 
 def obtener_timestamp_legible():
-    
     return datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
 
 def generar_datos_usuario_invalido(caso):
-   
     catalogo = {
         "sin_usuario": {
             "username": "",
@@ -150,25 +128,16 @@ def generar_datos_usuario_invalido(caso):
     return catalogo[caso]
 
 
-
 def hacer_scroll_al_fondo(driver):
-   
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    time.sleep(0.5)  
+    time.sleep(0.5)  # Pausa breve para que el scroll se complete
 
 
 def hacer_scroll_al_inicio(driver):
-    """
-    Hace scroll hasta el inicio de la página usando JavaScript.
-
-    Args:
-        driver: Instancia del WebDriver de Selenium.
-    """
     driver.execute_script("window.scrollTo(0, 0);")
     time.sleep(0.3)
 
 
 def obtener_texto_todos_elementos(driver, by, locator):
-   
     elementos = driver.find_elements(by, locator)
     return [el.text for el in elementos if el.text.strip()]

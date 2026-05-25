@@ -11,22 +11,20 @@ class BasePage:
         self.wait = WebDriverWait(driver, 10)
 
     def find_element(self, by, locator):
-        #Espera elemento visible
+        #Espera visible
         return self.wait.until(EC.visibility_of_element_located((by, locator)))
 
     def click(self, by, locator):
-        #Espera elemento clickeable
+        #Espera a que un elemento sea clickeable
         element = self.wait.until(EC.element_to_be_clickable((by, locator)))
         element.click()
 
     def send_keys(self, by, locator, text):
-       
         element = self.find_element(by, locator)
         element.clear()
         element.send_keys(text)
 
     def get_text(self, by, locator):
-       
         return self.find_element(by, locator).text
 
     def is_element_visible(self, by, locator):
@@ -38,5 +36,4 @@ class BasePage:
             return False
 
     def get_current_url(self):
-       
         return self.driver.current_url
